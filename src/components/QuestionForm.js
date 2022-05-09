@@ -10,6 +10,21 @@ function QuestionForm(props) {
     correctIndex: 0,
   });
 
+  function handleDropdown() {
+    fetch(`http://localhost:4000/questions/${props.question.id}`, {
+      method: "PATCH",
+      headers: {
+      "Content-Type": "application/json",
+    },
+    body: 
+    {
+      "correctIndex": props.integer
+    }
+ })
+    .then((r) => r.json())
+    .then((data) => console.log(data))
+  }
+
   function handleChange(event) {
     setFormData({
       ...formData,
@@ -20,7 +35,27 @@ function QuestionForm(props) {
   function handleSubmit(event) {
     event.preventDefault();
     console.log(formData);
+
+    fetch(`http://localhost:4000/questions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },   
+      body: JSON.stringify({
+      prompt: formData.prompt,
+      answers: [
+        formData.answer1,
+        formData.answer2,
+        formData.answer3,
+        formData.answer4
+      ],
+      correctIndex: formData.correctIndex}),
+    })
+      .then((r) => r.json())
+      .then((newQuestion) => console.log(newQuestion));
   }
+    
+  
 
   return (
     <section>
